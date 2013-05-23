@@ -1,0 +1,39 @@
+var currentUrl = ""
+var interval = setInterval(function() {
+	var hash = window.location.hash.substring(1);
+	if (hash != currentUrl) {
+		navigateTo(hash);
+	}
+}, 100);
+
+$('#url-bar').keydown(function (e) {
+    if (e.keyCode == 13) {
+        $('#go').click();
+    }
+});
+
+$('#go').click(function () {
+	var itemUrl = $('#url-bar').val();
+	navigateTo(itemUrl);
+});
+
+function navigateTo(itemUrl, req) {
+	currentUrl = itemUrl;
+	window.location = "#" + itemUrl;
+	$('#url-bar').val(itemUrl);
+	
+	if (req == undefined) {
+		req = Jsonary.getData(itemUrl);
+	}
+	$('#main').empty().addClass("loading");
+	window.scrollTo(0, 0);
+	req.getData(function(data, request) {
+		data = {"author":"Geraint","title":"A New Post","content":["Here is some text.","Here is some more text."],"date":"2013-04-03T04:03:21-0400","postId":"2013-04-03T04:03:21-0400Geraint","comments":[{"author":"adsfasdf","message":"asdfasdfa","date":"2013-04-03T10:25:57-0400"},{"author":"Geraint","message":"Testing form support in the JSON Browser extension...","date":"2013-04-15T11:53:01-0400"},{"author":"Geraint","message":"It seems to work. :)","date":"2013-04-15T11:56:21-0400"},{"author":"Geraint","message":":)","date":"2013-04-15T11:56:48-0400"},{"author":"Geraint","message":"More testing...","date":"2013-04-15T11:59:57-0400"},{"author":"Geraint","message":"Seems to work. :)","date":"2013-04-15T12:02:52-0400"},{"author":"Geraint","message":"Yet more testing.","date":"2013-04-15T12:54:04-0400"},{"author":"Geraint","message":"test","date":"2013-04-15T12:57:27-0400"},{"author":"Geraint","message":"test","date":"2013-04-15T13:03:07-0400"},{"author":"Geraint","message":"test","date":"2013-04-15T13:03:54-0400"},{"author":"Geraint","message":"test","date":"2013-04-15T13:04:39-0400"},{"author":"Stefano Fago","message":"I think It's the right thing for REST\/One PAge Application Technology ;-P","date":"2013-04-17T06:35:31-0400"},{"author":"Mike","message":"Also testing","date":"2013-04-20T04:40:32-0400"},{"author":"Mike","message":"Test again","date":"2013-04-20T05:30:50-0400"},{"author":"Mike","message":"Testing again","date":"2013-04-20T05:44:57-0400"},{"author":"Mike","message":"again","date":"2013-04-20T20:36:32-0400"},{"author":"chenxm","message":"haha","date":"2013-04-22T06:10:29-0400"}]}
+		$('#main').removeClass("loading").empty().renderJson(data);
+	});
+}
+
+Jsonary.addLinkHandler(function(link, data, request) {
+	navigateTo(link.href, request);
+	return true;
+});
